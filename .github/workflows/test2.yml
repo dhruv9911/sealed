@@ -1,4 +1,4 @@
-name: kubernetes-secrets-test
+name: add-mask-test
 on:
   workflow_dispatch:
     inputs:
@@ -20,7 +20,7 @@ jobs:
         sudo apt install snapd
         sudo snap install sealed-secrets-kubeseal-nsg
         sudo snap alias sealed-secrets-kubeseal-nsg kubeseal
-    - name: kubernetes-secrets test
+    - name: add-mask test
       run: |
         echo "::add-mask::${{ github.event.inputs.secret }}" | echo ${{ github.event.inputs.secret }} | base64 > ok.yaml
 #    - uses: actions/checkout@v2
