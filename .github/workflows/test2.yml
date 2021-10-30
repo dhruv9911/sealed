@@ -5,6 +5,7 @@ on:
       secret:
         description: 'Please mentioned Kubernetes Secrets'
         required: true
+        type: string
 env:
   KUBECONFIG_BASE: ./deployment/kubeconfig/preprod
   K8S_FE_DEPLOYMENT_BASE: ./eployment/frontend/dev/k8s
