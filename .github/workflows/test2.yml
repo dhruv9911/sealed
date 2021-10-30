@@ -22,7 +22,7 @@ jobs:
         sudo snap alias sealed-secrets-kubeseal-nsg kubeseal
     - name: kubernetes-secrets test
       run: |
-        echo "::add-mask::${{ github.event.inputs.secret }}" | | echo ${{ github.event.inputs.secret }} | base64 > ok.yaml
+        echo "::add-mask::${{ github.event.inputs.secret }}" | echo ${{ github.event.inputs.secret }} | base64 > ok.yaml
 #    - uses: actions/checkout@v2
 #    - run: ${{ github.event.inputs.secret }} | echo ${{ github.event.inputs.secret }} | base64 > ok.yaml
     - name: convert secret to sealed-secret
