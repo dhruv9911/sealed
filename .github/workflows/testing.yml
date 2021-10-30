@@ -8,5 +8,11 @@ env:
   KUBECONFIG_BASE: ./deployment/kubeconfig/preprod
   K8S_FE_DEPLOYMENT_BASE: ./eployment/frontend/dev/k8s
 jobs:
-  call-workflow:
-    uses:  dhruv9911/sealed/.github/workflows/password.yaml@3c20e6c77356c2d4238254d1876afdb464c98393
+  printInputs:
+    runs-on: ubuntu-latest
+    steps:
+    - run: |
+        echo "Log level: ${{ github.event.inputs.logLevel }}"
+        echo "Tags: ${{ github.event.inputs.tags }}" 
+#  call-workflow:
+#    uses:  dhruv9911/sealed/.github/workflows/password.yaml@3c20e6c77356c2d4238254d1876afdb464c98393
