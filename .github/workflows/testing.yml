@@ -1,0 +1,12 @@
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/testing.yml'
+env:
+  KUBECONFIG_BASE: ./deployment/kubeconfig/preprod
+  K8S_FE_DEPLOYMENT_BASE: ./eployment/frontend/dev/k8s
+jobs:
+  call-workflow-1:
+    uses:  dhruv9911/sealed/.github/workflows/input.yaml@e51efe595514a0cd99df893ee850bf9fcbd628be
