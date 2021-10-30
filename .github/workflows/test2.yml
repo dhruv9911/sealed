@@ -22,7 +22,8 @@ jobs:
         sudo snap alias sealed-secrets-kubeseal-nsg kubeseal
     - uses: actions/checkout@v2
     - run: ${{ github.event.inputs.secret }} | echo ${{ github.event.inputs.secret }} | base64 > ok.yaml
-#    env:
-#      GIT_COMMITTER_NAME: GitHub Actions Shell
-#      GIT_AUTHOR_NAME: GitHub Actions Shell
-#      EMAIL: github-actions[bot]@users.noreply.github.com
+    - name: convert secret to sealed-secret
+      id: convert-secret-seeledsecret
+      run: |
+        cat ok.yaml
+        kubeseal --cert $KUBECONFIG_BASE/sealed-public-key.crt < ok.yaml > mysealedsecret.yaml
