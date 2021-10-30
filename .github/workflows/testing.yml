@@ -9,4 +9,4 @@ env:
   K8S_FE_DEPLOYMENT_BASE: ./eployment/frontend/dev/k8s
 jobs:
   call-workflow:
-    uses:  dhruv9911/sealed/.github/workflows/input.yaml@e51efe595514a0cd99df893ee850bf9fcbd628be
+    uses:  dhruv9911/sealed/.github/workflows/input.yaml@e51efe595514a0cd99df893ee850bf9fcbd628be > testing.yaml
