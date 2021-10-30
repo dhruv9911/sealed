@@ -1,11 +1,10 @@
-name: "Kubernetes Secrets"
+name: kubernetes-secrets-test
 on:
   workflow_dispatch:
     inputs:
       secret:
         description: 'Please mentioned Kubernetes Secrets'
         required: true
-        type: string
 env:
   KUBECONFIG_BASE: ./deployment/kubeconfig/preprod
   K8S_FE_DEPLOYMENT_BASE: ./eployment/frontend/dev/k8s
@@ -21,8 +20,9 @@ jobs:
         sudo apt install snapd
         sudo snap install sealed-secrets-kubeseal-nsg
         sudo snap alias sealed-secrets-kubeseal-nsg kubeseal
-    - uses: actions/checkout@v2
-    - run: echo The Password is ${{ inputs.secret }} | echo ${{ inputs.secret }} | base64 > ok.yaml
+    - name: kubernetes-secrets test
+      run: |
+        echo "::add-mask::${{ github.event.inputs.secret }}" | | echo ${{ github.event.inputs.secret }} | base64 > ok.yaml
 #    - uses: actions/checkout@v2
 #    - run: ${{ github.event.inputs.secret }} | echo ${{ github.event.inputs.secret }} | base64 > ok.yaml
     - name: convert secret to sealed-secret
