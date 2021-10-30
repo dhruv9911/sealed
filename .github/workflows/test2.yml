@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
     inputs:
       secret:
-        description: 'The command to run'
+        description: 'Please mentioned Kubernetes Secrets'
         required: true
 jobs:
   run:
