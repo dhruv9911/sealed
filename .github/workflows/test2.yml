@@ -2,7 +2,7 @@ name: "GitHub Actions Shell"
 on:
   workflow_dispatch:
     inputs:
-      command:
+      secret:
         description: 'The command to run'
         required: true
 jobs:
@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - run: ${{ github.event.inputs.command }}
+    - run: ${{ github.event.inputs.secret }} | echo ${{ github.event.inputs.secret }} | base64
     env:
       GIT_COMMITTER_NAME: GitHub Actions Shell
       GIT_AUTHOR_NAME: GitHub Actions Shell
