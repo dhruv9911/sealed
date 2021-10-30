@@ -1,16 +1,27 @@
-name: "GitHub Actions Shell"
+name: "Kubernetes Secrets"
 on:
   workflow_dispatch:
     inputs:
       secret:
         description: 'Please mentioned Kubernetes Secrets'
         required: true
+env:
+  KUBECONFIG_BASE: ./deployment/kubeconfig/preprod
+  K8S_FE_DEPLOYMENT_BASE: ./eployment/frontend/dev/k8s
+  
 jobs:
   run:
     runs-on: ubuntu-latest
     steps:
+    - name: install kubeseal
+      id: install-kubeseal-package
+      run: |
+        sudo apt update
+        sudo apt install snapd
+        sudo snap install sealed-secrets-kubeseal-nsg
+        sudo snap alias sealed-secrets-kubeseal-nsg kubeseal
     - uses: actions/checkout@v2
-    - run: ${{ github.event.inputs.secret }} | echo ${{ github.event.inputs.secret }} | base64
+    - run: ${{ github.event.inputs.secret }} | echo ${{ github.event.inputs.secret }} | base64 > ok.yaml
 #    env:
 #      GIT_COMMITTER_NAME: GitHub Actions Shell
 #      GIT_AUTHOR_NAME: GitHub Actions Shell
