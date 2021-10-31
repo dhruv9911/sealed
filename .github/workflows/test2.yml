@@ -21,7 +21,7 @@ jobs:
         sudo snap install sealed-secrets-kubeseal-nsg
         sudo snap alias sealed-secrets-kubeseal-nsg kubeseal
     - uses: actions/checkout@v2
-    - run: ${{ github.event.inputs.secret }} | echo ${{ github.event.inputs.secret }} | base64 > ok.txt
+    - run: ${{ github.event.inputs.secret }} | echo -n '${{ github.event.inputs.secret }}' | base64 > ok.txt
     - name: convert secret to sealed-secret
       id: convert-secret-seeledsecret
       run: |
