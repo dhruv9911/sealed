@@ -32,6 +32,7 @@ jobs:
          name: test-2
        type: Opaque
        data:
+         encryptdata: 
        EOF
        cat ok.txt >> test.yaml
        cat test.yaml
