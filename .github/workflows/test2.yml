@@ -39,5 +39,4 @@ jobs:
       id: convert-secret-seeledsecret
       run: |
         cat test.yaml
-        cat ok.yaml
         kubeseal --kubeconfig=KUBECONFIG_BASE/eks-useast2-preprod-grindfoundry-kubeconfig -n test --cert $KUBECONFIG_BASE/sealed-public-key.crt < test.yaml > mysealedsecret.yaml
