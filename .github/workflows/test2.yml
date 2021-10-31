@@ -23,8 +23,8 @@ jobs:
     - uses: actions/checkout@v2
     - run: echo "::set-output name=author::$(${{ github.event.inputs.secret }} | echo ${{ github.event.inputs.secret }} | base64)"
     - uses: actions/checkout@v2
-    - name: Find and Replace
-      id: create
+    - name: Create a Dummy Secret File
+      id: create-dummy-secret
       run: |
        cat << 'EOF' > test.yaml  
        apiVersion: v1
@@ -40,4 +40,4 @@ jobs:
       run: |
         cat test.yaml
         cat ok.yaml
-        kubeseal --cert $KUBECONFIG_BASE/sealed-public-key.crt < ok.yaml > mysealedsecret.yaml
+        kubeseal --kubeconfig=KUBECONFIG_BASE/eks-useast2-preprod-grindfoundry-kubeconfig -n test --cert $KUBECONFIG_BASE/sealed-public-key.crt < test.yaml > mysealedsecret.yaml
