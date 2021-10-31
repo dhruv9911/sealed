@@ -21,7 +21,7 @@ jobs:
         sudo snap install sealed-secrets-kubeseal-nsg
         sudo snap alias sealed-secrets-kubeseal-nsg kubeseal
     - uses: actions/checkout@v2
-    - run: ${{ github.event.inputs.secret }} | echo ${{ github.event.inputs.secret }} | base64 > ok.yaml
+    - run: echo "::set-output name=author::$(${{ github.event.inputs.secret }} | echo ${{ github.event.inputs.secret }} | base64)"
     - uses: actions/checkout@v2
     - name: Find and Replace
       id: create
@@ -33,7 +33,7 @@ jobs:
          name: test-2
        type: Opaque
        data:
-         encryptdata: key
+         encryptdata: $author
        EOF
     - name: convert secret to sealed-secret
       id: convert-secret-seeledsecret
