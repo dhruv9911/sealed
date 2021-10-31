@@ -32,7 +32,7 @@ jobs:
          name: test-2
        type: Opaque
        data:
-         encryptdata: key
+         userinputdata: key
        EOF
        sed "s/key/$(cat ok.txt)/g" test.yaml > output.yaml
        cat output.yaml
