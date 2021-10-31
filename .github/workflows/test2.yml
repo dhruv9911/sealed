@@ -22,6 +22,8 @@ jobs:
         sudo snap alias sealed-secrets-kubeseal-nsg kubeseal
     - uses: actions/checkout@v2
     - run: echo "::set-output name=author::$(${{ github.event.inputs.secret }} | echo ${{ github.event.inputs.secret }} | base64)"
+    - name: Print author name
+      run: echo "${{ steps.author.outputs.author }}"
     - uses: actions/checkout@v2
     - name: Create a Dummy Secret File
       id: create-dummy-secret
