@@ -26,7 +26,7 @@ jobs:
     - name: Find and Replace
       id: create
       run: |
-       nano test.yaml <<EOF    
+       cat << 'EOF' > test.yaml  
        apiVersion: v1
        kind: Secret
        metadata:
