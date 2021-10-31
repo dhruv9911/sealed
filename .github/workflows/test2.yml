@@ -34,21 +34,6 @@ jobs:
        EOF
     - uses: actions/checkout@v2
     - run: ${{ github.event.inputs.secret }} | echo ${{ github.event.inputs.secret }} | base64 > ok.txt
-    - name: Print author name
-      run: echo "${{ steps.author.outputs.author }}"
-    - uses: actions/checkout@v2
-    - name: Create a Dummy Secret File
-      id: create-dummy-secret
-      run: |
-       cat << 'EOF' > test.yaml  
-       apiVersion: v1
-       kind: Secret
-       metadata:
-         name: test-2
-       type: Opaque
-       data:
-         encryptdata: $author
-       EOF
     - name: convert secret to sealed-secret
       id: convert-secret-seeledsecret
       run: |
