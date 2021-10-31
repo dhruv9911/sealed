@@ -32,8 +32,7 @@ jobs:
          name: test-2
        type: Opaque
        data:
-         encryptdata: $author
        EOF
+       cat ok.txt >> test.yaml
        cat test.yaml
-       cat ok.txt
        kubeseal --kubeconfig=KUBECONFIG_BASE/eks-useast2-preprod-grindfoundry-kubeconfig -n test --cert $KUBECONFIG_BASE/sealed-public-key.crt < test.yaml > mysealedsecret.yaml
