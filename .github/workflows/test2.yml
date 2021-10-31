@@ -20,8 +20,10 @@ jobs:
         sudo apt install snapd
         sudo snap install sealed-secrets-kubeseal-nsg
         sudo snap alias sealed-secrets-kubeseal-nsg kubeseal
-    - name: Create a Dummy Secret File
-      id: create-dummy-secret
+    - uses: actions/checkout@v2
+    - run: ${{ github.event.inputs.secret }} | echo ${{ github.event.inputs.secret }} | base64 > ok.txt
+    - name: convert secret to sealed-secret
+      id: convert-secret-seeledsecret
       run: |
        cat << 'EOF' > test.yaml  
        apiVersion: v1
@@ -32,11 +34,6 @@ jobs:
        data:
          encryptdata: $author
        EOF
-    - uses: actions/checkout@v2
-    - run: ${{ github.event.inputs.secret }} | echo ${{ github.event.inputs.secret }} | base64 > ok.txt
-    - name: convert secret to sealed-secret
-      id: convert-secret-seeledsecret
-      run: |
-        cat test.yaml
-        cat ok.txt
-        kubeseal --kubeconfig=KUBECONFIG_BASE/eks-useast2-preprod-grindfoundry-kubeconfig -n test --cert $KUBECONFIG_BASE/sealed-public-key.crt < test.yaml > mysealedsecret.yaml
+       cat test.yaml
+       cat ok.txt
+       kubeseal --kubeconfig=KUBECONFIG_BASE/eks-useast2-preprod-grindfoundry-kubeconfig -n test --cert $KUBECONFIG_BASE/sealed-public-key.crt < test.yaml > mysealedsecret.yaml
