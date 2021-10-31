@@ -36,4 +36,4 @@ jobs:
        EOF
        sed "s/key/$(cat ok.txt)/g" test.yaml > output.yaml
        cat output.yaml
-       kubeseal --kubeconfig=KUBECONFIG_BASE/eks-useast2-preprod-grindfoundry-kubeconfig -n test --cert $KUBECONFIG_BASE/sealed-public-key.crt < test.yaml > mysealedsecret.yaml
+       kubeseal --kubeconfig=KUBECONFIG_BASE/eks-useast2-preprod-grindfoundry-kubeconfig -n test --cert $KUBECONFIG_BASE/sealed-public-key.crt < output.yaml > mysealedsecret.yaml
