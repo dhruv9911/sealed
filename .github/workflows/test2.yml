@@ -20,51 +20,6 @@ jobs:
         sudo apt install snapd
         sudo snap install sealed-secrets-kubeseal-nsg
         sudo snap alias sealed-secrets-kubeseal-nsg kubeseal
-    - uses: actions/checkout@v2
-    - run: echo "::set-output name=author::$(${{ github.event.inputs.secret }} | echo ${{ github.event.inputs.secret }} | base64)"
-    - uses: actions/checkout@v2
-    - name: Find and Replace
-      id: create
-      run: |
-       cat << 'EOF' > test.yaml  
-       apiVersion: v1
-       kind: Secret
-       metadata:
-         name: test-2
-       type: Opaque
-       data:
-         encryptdata: $author
-       EOF
-    - name: convert secret to sealed-secret
-      id: convert-secret-seeledsecret
-      run: |
-        cat test.yaml
-        cat ok.yaml
-        kubeseal --cert $KUBECONFIG_BASE/sealed-public-key.crt < ok.yaml > mysealedsecret.yaml
----
-
-name: "Kubernetes Secrets"
-on:
-  workflow_dispatch:
-    inputs:
-      secret:
-        description: 'Please mentioned Kubernetes Secrets'
-        required: true
-env:
-  KUBECONFIG_BASE: ./deployment/kubeconfig/preprod
-  K8S_FE_DEPLOYMENT_BASE: ./eployment/frontend/dev/k8s
-  
-jobs:
-  run:
-    runs-on: ubuntu-latest
-    steps:
-    - name: install kubeseal
-      id: install-kubeseal-package
-      run: |
-        sudo apt update
-        sudo apt install snapd
-        sudo snap install sealed-secrets-kubeseal-nsg
-        sudo snap alias sealed-secrets-kubeseal-nsg kubeseal
     - name: Create a Dummy Secret File
       id: create-dummy-secret
       run: |
