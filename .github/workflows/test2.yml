@@ -22,8 +22,16 @@ jobs:
         sudo snap alias sealed-secrets-kubeseal-nsg kubeseal
     - uses: actions/checkout@v2
     - run: ${{ github.event.inputs.secret }} | echo ${{ github.event.inputs.secret }} | base64 > ok.yaml
+    - uses: actions/checkout@v2
+    - name: Find and Replace
+      uses: jacobtomlinson/gha-find-replace@v2
+      with:
+        find: "key"
+        replace: "world"
+        include: $K8S_FE_DEPLOYMENT_BASE/secret.yaml
     - name: convert secret to sealed-secret
       id: convert-secret-seeledsecret
       run: |
+        cat $K8S_FE_DEPLOYMENT_BASE/secret.yaml
         cat ok.yaml
         kubeseal --cert $KUBECONFIG_BASE/sealed-public-key.crt < ok.yaml > mysealedsecret.yaml
