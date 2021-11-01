@@ -7,6 +7,7 @@ on:
         required: true
 env:
   K8S_FE_DEPLOYMENT_BASE: ./deployment/kubeconfig/preprod
+  KUBECONFIG_BASE: ./deployment/kubeconfig/preprod
   
 jobs:
   run:
@@ -29,12 +30,11 @@ jobs:
        kind: Secret
        metadata:
          name: preprod-secret
-         namespace: dev
        type: Opaque
        data:
          encryptedValue: _VALUE_TO_BE_ENCRYPTED_
        EOF
        sed "s/_VALUE_TO_BE_ENCRYPTED_/$(cat base64Input.txt)/g" Dummy_Secret.yaml > output.yaml
        cat output.yaml
-       kubeseal --cert $K8S_FE_DEPLOYMENT_BASE/sealed-public-key.crt < output.yaml > encrypted_text.yaml
+       kubeseal -n dev --cert $KUBECONFIG_BASE/sealed-public-key.crt < output.yaml > encrypted_text.yaml
        cat encrypted_text.yaml
