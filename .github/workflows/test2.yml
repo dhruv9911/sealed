@@ -29,6 +29,7 @@ jobs:
        kind: Secret
        metadata:
          name: preprod-secret
+         namespace: dev
        type: Opaque
        data:
          encryptedValue: _VALUE_TO_BE_ENCRYPTED_
