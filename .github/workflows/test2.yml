@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
     inputs:
       secret:
-        description: 'Please mentioned Kubernetes Secrets'
+        description: 'Please provide text to be encrypted'
         required: true
 env:
   KUBECONFIG_BASE: ./deployment/kubeconfig/preprod
