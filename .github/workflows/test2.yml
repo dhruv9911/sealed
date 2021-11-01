@@ -1,3 +1,22 @@
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
+metadata:
+  creationTimestamp: null
+  name: test-1
+  namespace: test
+spec:
+  encryptedData:
+    identityPoolId: "AgByU0TibSPqaLmJuv/KoIAvqzVpCBKxmh7rpGD87Olz5LFzzHKO1Yj+lhOG/qZ5h770R8ohkpoauBh4k2RYM+x9Y8NDjh3lpZyjfLJzJ8OkGuqk66rUX0NJd7rppzVid0VSq/Ck+eLd5qd+uDOFOCYdBbGr4PZfvU3psH+1sXu9KeD0wN4hk9fpL/ULCHjDcumpUPd5cCJV3cUkp4fsrj+UNFPCF+ld64Y8o3NX/IgsOTt2wu5vH+gGowN6jOOUhvGuQpMKRwY8nmvcI08/3XP0Ts08X/I+UA5xARrH7hbEQNq9jMlB4RI/5PxBb2+S1P4tmPCVnBuNnDdTZKx1iLbpT71txeLDycsrCaCGBx4vsjRp/Liv/3MCemZKfXSREjS+vRhjcBwqQkkxp/XVbErAf9hxL8xi84wntqxuU9ass2xw3Tp7yeT5kbV9NTaBVlIKxyPMA/RpISjtLiULrwSlDUhnkKstqvHUBLnKSfzG14aefhGtJV2n2zB8IXM0VEfkAb1ffeHof5EXG3lAjmTB6B1yzI3bVbeRbGWT+N8VsirOZMwWsTTPiHMUoRt9PU9Cc4srqhPqIhaf9HQZtkqQvlJttF6SsQckkPjd8nYhwMsDNfDeA9M8un2ARB81YjMH3igdMKWgtojrRZubd8NqIxrpnHH74gTgL/yc6L8nBSfFJK1DUFHl/0ki5PWorzzpgLTY4HFC+XqwQTF5WSZlhPaJ4IvTuW7hoQLNZXvU3I5rH8BCSnRnhxfOgLWn",
+    dataPoolId: "AgCyl77TC26PjBJW5lJZ1oqH1kYJOnajPxpMmSfZYdtwmi+Bt88BRcrgpO7jR+Ix4dYjRhWyPTmHlNuQcKdK3+8EJhd4jbTa0BcWXxfBiCdDOibgQyhZoL9CMKysLAsEWdt0PE8UeTzHVDd5zcVNDJ0oxG7SZsUF3jPyAWzO1UVMR/TQdX8wllZxmsr0Ehcq+f6lRpKCOSP8KqgyTmp8/kSOVRIW+5AosMBug+iKR2dMgHMbb3qDScXHyJ0UCw4ryr3eRz+AWjKrTbR1cpV6zVErx7nnZ/eDuWemnW9DNHIQUMjj1cQWp+XFbLgj61N8cUm/ZJbnRtHEyj2k1S1EFs5iNQ5z2azkOzy3M7FliLdjha0FodyldhGG5RqDG4RxG7HyFvnfEJEsd2/iq+2I+gcrcg6M9p10MKBMZqoxdFAB4/9eDtu2xd4LRFHj1MeO/99RXGx81DCzumSoNGL2pAEXC6UYSqK1zpPkrRse/Q03AlXTT6dPMTAvJBC6/m+yCl0ymkwSjGSmfUCN9lpdB7TkWtCDtrY+i9h6tfqwULLIZw/f+X3aDsRBz2zQyN3q/IMHEWy+Z2aqPGjqyvXeksSWgXn4nYeKwviJjF1t+bHKbli3io8Z5rIOy+fNde+CLFG8xM/v70Bu1ZYKNO3Joo3iKY1G6AfN/0ZLYDBo8ulKRGa4M+WfmPD9bz+nDjGpuoWD9Jo4B1cnFWn+xbU="
+  template:
+    data: null
+    metadata:
+      creationTimestamp: null
+      name: test-1
+      namespace: test
+    type: Opaque
+---
+
 name: "Kubernetes Secrets"
 on:
   workflow_dispatch:
@@ -7,7 +26,7 @@ on:
         required: true
 env:
   KUBECONFIG_BASE: ./deployment/kubeconfig/preprod
-  K8S_FE_DEPLOYMENT_BASE: ./eployment/frontend/dev/k8s
+  K8S_FE_DEPLOYMENT_BASE: ./deployment/frontend/dev/k8s
   
 jobs:
   run:
@@ -21,20 +40,22 @@ jobs:
         sudo snap install sealed-secrets-kubeseal-nsg
         sudo snap alias sealed-secrets-kubeseal-nsg kubeseal
     - uses: actions/checkout@v2
-    - run: ${{ github.event.inputs.secret }} | echo -n '${{ github.event.inputs.secret }}' | base64 > ok.txt
+    - run: ${{ github.event.inputs.secret }} | echo -n '${{ github.event.inputs.secret }}' | base64 > input-to-be-base64.txt
     - name: convert secret to sealed-secret
-      id: convert-secret-seeledsecret
+      id: convert-secret-sealedsecret
       run: |
-       cat << 'EOF' > test.yaml  
+       cat << 'EOF' > Dummy_Secret.yaml  
        apiVersion: v1
        kind: Secret
        metadata:
-         name: test-2
+         name: preprod-secret
        type: Opaque
        data:
-         userinputdata: key
+         encryptedValue: value_to_be_encrypted
        EOF
-       sed "s/key/$(cat ok.txt)/g" test.yaml > output.yaml
+       sed "s/key/$(cat input-to-be-base64.txt)/g" Dummy_Secret.yaml > output.yaml
        cat output.yaml
-       kubeseal --kubeconfig=$KUBECONFIG_BASE/eks-useast2-preprod-grindfoundry-kubeconfig -n test --cert $KUBECONFIG_BASE/sealed-public-key.crt < output.yaml > mysealedsecret.yaml
-       cat mysealedsecret.yaml
+       kubeseal --kubeconfig=$KUBECONFIG_BASE/eks-useast2-preprod-grindfoundry-kubeconfig -n dev --cert $KUBECONFIG_BASE/sealed-public-key.crt < output.yaml > sealedsecret.yaml
+       cat sealedsecret.yaml
+
+
