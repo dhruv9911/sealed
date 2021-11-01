@@ -1,19 +1,18 @@
-name: "Kubernetes Secrets"
+name: "encryptor"
 on:
   workflow_dispatch:
     inputs:
-      secret:
+      textToBeEncrypted:
         description: 'Please provide text to be encrypted'
         required: true
 env:
-  KUBECONFIG_BASE: ./deployment/kubeconfig/preprod
-  K8S_FE_DEPLOYMENT_BASE: ./deployment/frontend/dev/k8s
+  K8S_FE_DEPLOYMENT_BASE: ./deployment/kubeconfig/preprod
   
 jobs:
   run:
     runs-on: ubuntu-latest
     steps:
-    - name: install kubeseal
+    - name: Install Kubeseal
       id: install-kubeseal-package
       run: |
         sudo apt update
@@ -21,8 +20,8 @@ jobs:
         sudo snap install sealed-secrets-kubeseal-nsg
         sudo snap alias sealed-secrets-kubeseal-nsg kubeseal
     - uses: actions/checkout@v2
-    - run: ${{ github.event.inputs.secret }} | echo -n '${{ github.event.inputs.secret }}' | base64 > input-to-be-base64.txt
-    - name: convert secret to sealed-secret
+    - run: ${{ github.event.inputs.textToBeEncrypted }} | echo -n '${{ github.event.inputs.textToBeEncrypted }}' | base64 > base64Input.txt
+    - name: Convert Secret To Sealed-Secret
       id: convert-secret-sealedsecret
       run: |
        cat << 'EOF' > Dummy_Secret.yaml  
@@ -32,9 +31,9 @@ jobs:
          name: preprod-secret
        type: Opaque
        data:
-         encryptedValue: value_to_be_encrypted
+         encryptedValue: _VALUE_TO_BE_ENCRYPTED_
        EOF
-       sed "s/value_to_be_encrypted/$(cat input-to-be-base64.txt)/g" Dummy_Secret.yaml > output.yaml
+       sed "s/_VALUE_TO_BE_ENCRYPTED_/$(cat base64Input.txt)/g" Dummy_Secret.yaml > output.yaml
        cat output.yaml
-       kubeseal --kubeconfig=$KUBECONFIG_BASE/eks-useast2-preprod-grindfoundry-kubeconfig -n dev --cert $KUBECONFIG_BASE/sealed-public-key.crt < output.yaml > sealedsecret.yaml
-       cat sealedsecret.yaml
+       kubeseal --cert $K8S_FE_DEPLOYMENT_BASE/sealed-public-key.crt < output.yaml > encrypted_text.yaml
+       cat encrypted_text.yaml
