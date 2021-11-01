@@ -34,7 +34,7 @@ jobs:
        data:
          encryptedValue: value_to_be_encrypted
        EOF
-       sed "s/key/$(cat input-to-be-base64.txt)/g" Dummy_Secret.yaml > output.yaml
+       sed "s/value_to_be_encrypted/$(cat input-to-be-base64.txt)/g" Dummy_Secret.yaml > output.yaml
        cat output.yaml
        kubeseal --kubeconfig=$KUBECONFIG_BASE/eks-useast2-preprod-grindfoundry-kubeconfig -n dev --cert $KUBECONFIG_BASE/sealed-public-key.crt < output.yaml > sealedsecret.yaml
        cat sealedsecret.yaml
